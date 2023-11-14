@@ -7,3 +7,7 @@ npm install
 
 npm start
 ```
+
+## Authors
+- BombayV
+- [Dante](https://github.com/D4NTE-4LEX)
