@@ -52,49 +52,49 @@ export const StartDJSClient = (logger, wabot) => {
     });
 
     wabot.on('change_battery', async batteryInfo => {
-        const logsChannel = client.channels.cache.get('1105730552151158865');
+        const logsChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
         if (!logsChannel) return;
         if (batteryInfo.plugged) {
-            logsChannel.send(`Cargando telefono. Bateria ${batteryInfo.battery}.`)
+            await logsChannel.send(`Cargando telefono. Bateria ${batteryInfo.battery}.`)
         } else {
-            logsChannel.send(`Telefono desconectado. Bateria ${batteryInfo.battery}.`)
+            await logsChannel.send(`Telefono desconectado. Bateria ${batteryInfo.battery}.`)
         }
     });
 
     wabot.on('contact_changed', async (message, oldId, newId, isContact) => {
-        const logsChannel = client.channels.cache.get('1105730552151158865');
+        const logsChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
         if (!logsChannel) return;
         if (message && message.body) {
-            logsChannel.send(`[${UnixToTime(message.timestamp)}] [Contact Changed] **${message.body}** - OldId: ${oldId} - NewId: ${newId} - Contact: ${isContact}`)
+            await logsChannel.send(`[${UnixToTime(message.timestamp)}] [Contact Changed] **${message.body}** - OldId: ${oldId} - NewId: ${newId} - Contact: ${isContact}`)
         } else {
-            logsChannel.send(`[${UnixToTime(message.timestamp)}] [Contact Changed] - OldId: ${oldId} - NewId: ${newId} - Contact: ${isContact}`)
+            await logsChannel.send(`[${UnixToTime(message.timestamp)}] [Contact Changed] - OldId: ${oldId} - NewId: ${newId} - Contact: ${isContact}`)
         }
     });
 
     wabot.on('call', async (call) => {
-        const logsChannel = client.channels.cache.get('1105730552151158865');
+        const logsChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
         if (!logsChannel) return;
         if (call.outgoing) {
-            logsChannel.send(`[${UnixToTime(call.timestamp)}] Dante esta haciendo una ${call.isVideo ? "videollamada" : "llamada"}.`)
+            await logsChannel.send(`[${UnixToTime(call.timestamp)}] Dante esta haciendo una ${call.isVideo ? "videollamada" : "llamada"}.`)
         } else {
-            logsChannel.send(`[${UnixToTime(call.timestamp)}] Dante esta recibiendo una ${call.isVideo ? "videollamada" : "llamada"} de ${call.from}.`)
+            await logsChannel.send(`[${UnixToTime(call.timestamp)}] Dante esta recibiendo una ${call.isVideo ? "videollamada" : "llamada"} de ${call.from}.`)
         }
     });
 
     wabot.on('message_edit', async (message, newBody, prevBody) => {
-        const logsChannel = client.channels.cache.get('1105730552151158865');
+        const logsChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
         if (!logsChannel) return;
         if (newBody && prevBody) {
             const contact = await message.getContact()
             const name = contact.pushname
-            logsChannel.send(`[${UnixToTime(message.timestamp)}] [${name}] [Edited Message] New: ${newBody} - Old: ${prevBody}.`)
+            await logsChannel.send(`[${UnixToTime(message.timestamp)}] [${name}] [Edited Message] New: ${newBody} - Old: ${prevBody}.`)
         }
     })
 
     // Whatsapp Event Handler
     wabot.on('message_create', async message => {
         if (!message.fromMe) {
-            const logsChannel = client.channels.cache.get('1105730552151158865');
+            const logsChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
             if (!logsChannel) return;
 
             const contact = await message.getContact()
@@ -104,9 +104,9 @@ export const StartDJSClient = (logger, wabot) => {
                 
                 const chat = await message.getChat();
                 if (chat.isGroup){
-                    logsChannel.send(`[${UnixToTime(message.timestamp)}] [${chat.groupMetadata.subject || "Grupo"}] [${name}] **${message.body}**`)
+                    await logsChannel.send(`[${UnixToTime(message.timestamp)}] [${chat.groupMetadata.subject || "Grupo"}] [${name}] **${message.body}**`)
                 } else {
-                    logsChannel.send(`[${UnixToTime(message.timestamp)}] [${name}] **${message.body}**`)
+                    await logsChannel.send(`[${UnixToTime(message.timestamp)}] [${name}] **${message.body}**`)
                 }
             }
 
@@ -116,7 +116,7 @@ export const StartDJSClient = (logger, wabot) => {
                 const sfbuff = new Buffer.from(data, "base64");
                 const filetype = media.mimetype.split('/')[1]
                 const sfattach = new AttachmentBuilder(sfbuff, `output.${filetype}`);
-                logsChannel.send({ files: [sfattach] , content: `[${name}]`});
+                await logsChannel.send({files: [sfattach], content: `[${name}]`});
             }
         } else {
             if (!message.body.includes('-')) return;

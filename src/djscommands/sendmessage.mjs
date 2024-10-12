@@ -37,6 +37,8 @@ export const sendmessage = {
         await interaction.respond(choices.filter(choice => choice.name.toLowerCase().includes(focusedValue.toLowerCase())).slice(0, 24))
     },
     run: async (interaction) => {
+        if (!interaction.isCommand()) return;
+
         const { client } = interaction;
         const message = interaction.options.getString('message');
         const user = interaction.options.getString('person');
