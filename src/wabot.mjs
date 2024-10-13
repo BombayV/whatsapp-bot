@@ -1,38 +1,44 @@
-import qrcode from "qrcode-terminal";
+import QRCode from 'qrcode'
 import wb from 'whatsapp-web.js';
-const { Client, LocalAuth } = wb
+const { Client, LocalAuth } = wb;
+
+const generateQR = async text => {
+	try {
+		return await QRCode.toDataURL(text);
+	} catch (err) {
+		console.error(err)
+		return null;
+	}
+}
 
 export const StartWhatsappClient = async (logger) => {
-    const client = new Client({
-        authStrategy: new LocalAuth()
-    });
+	const client = new Client({
+		authStrategy: new LocalAuth()
+	});
 
-    client.on('authenticated', (session) => {
-        logger.success("Whatsapp Bot authenticated!")
-    });
+	const qrPromise = new Promise((resolve, reject) => {
+		client.on('qr', async qr => {
+			resolve(await generateQR(qr));
+		});
 
-    client.on('auth_failure', () => {
-        logger.error("Whatsapp Bot failed to authenticate.")
-    });
+		client.on('authenticated', () => {
+			logger.success('Whatsapp Bot authenticated!');
+		});
 
-    client.on('qr', qr => {
-        qrcode.generate(qr, {small: true});
-    });
+		client.on('auth_failure', () => {
+			logger.error('Whatsapp Bot failed to authenticate.');
+			reject();
+		});
 
-    client.on('ready', () => {
-        logger.success("Whatsapp Bot started!")
-    });
+		client.on('ready', () => {
+			logger.success('Whatsapp Bot started!');
+			resolve();
+		});
+	});
 
-    client.on('message', async message => {
-        // Ignore if the message is from the bot itself or from a group
-        if (message.id?.participant) return;
-
-        // Custom message for marcelo
-        if (message.from === '593978789942@c.us') {
-            await message.reply("Agachate y conocelo")
-        }
-    });
-
-    await client.initialize()
-    return client;
-}
+	await client.initialize();
+	return {
+		wabot: client,
+		qrPromise
+	}
+};
