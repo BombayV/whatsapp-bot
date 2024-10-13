@@ -1,23 +1,27 @@
-import QRCode from 'qrcode'
+import QRCode from 'qrcode';
 import wb from 'whatsapp-web.js';
 const { Client, LocalAuth } = wb;
 
-const generateQR = async text => {
+const generateQR = async (text) => {
 	try {
 		return await QRCode.toDataURL(text);
 	} catch (err) {
-		console.error(err)
+		console.error(err);
 		return null;
 	}
-}
+};
 
 export const StartWhatsappClient = async (logger) => {
 	const client = new Client({
-		authStrategy: new LocalAuth()
+		authStrategy: new LocalAuth(),
+		puppeteer: {
+			headless: true,
+			args: ['--no-sandbox', '--disable-setuid-sandbox']
+		}
 	});
 
 	const qrPromise = new Promise((resolve, reject) => {
-		client.on('qr', async qr => {
+		client.on('qr', async (qr) => {
 			resolve(await generateQR(qr));
 		});
 
@@ -40,5 +44,5 @@ export const StartWhatsappClient = async (logger) => {
 	return {
 		wabot: client,
 		qrPromise
-	}
+	};
 };

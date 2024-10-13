@@ -1,5 +1,5 @@
-import { Logger } from '../utils/logger.mjs';
-import {AttachmentBuilder} from "discord.js";
+import { Logger } from '../utils/Logger.mjs';
+import { AttachmentBuilder } from 'discord.js';
 
 const logger = new Logger(true);
 export const ready = async (client) => {

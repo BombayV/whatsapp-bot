@@ -17,8 +17,7 @@
 		"colorette": "^2.0.20",
 		"discord.js": "^14.16.3",
 		"dotenv": "^16.4.5",
-		"level": "^8.0.1",
-		"whatsapp-web.js": "^1.26.0"
+		"whatsapp-web.js": "^1.23.0"
 	},
 	"packageManager": "pnpm@9.12.1+sha256.91452fdfa46234ae447d46d5c4fc4e7e0a7058f90495c4b6f77f8beebbb154e3",
 	"devDependencies": {

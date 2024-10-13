@@ -3,16 +3,16 @@ import djscommands from './djscommands/index.mjs';
 import djsevents from './events/index.mjs';
 import wb from 'whatsapp-web.js';
 import { Collection, IntentsBitField, Partials, Client, AttachmentBuilder } from 'discord.js';
-import {message_create} from "./wsevents/message_create.mjs";
-import {message_edit} from "./wsevents/message_edit.mjs";
-import {change_battery} from "./wsevents/change_battery.mjs";
-import {message} from "./wsevents/message.mjs";
-import {incoming_call} from "./wsevents/incoming_call.mjs";
-import {message_ciphertext} from "./wsevents/message_ciphertext.mjs";
-import {message_revoke_everyone} from "./wsevents/message_revoke_everyone.mjs";
-import {loading_screen} from "./wsevents/loading_screen.mjs";
-import {contact_change} from "./wsevents/contact_change.mjs";
-import {media_uploaded} from "./wsevents/media_uploaded.mjs";
+import { message_create } from './wsevents/message_create.mjs';
+import { message_edit } from './wsevents/message_edit.mjs';
+import { change_battery } from './wsevents/change_battery.mjs';
+import { message } from './wsevents/message.mjs';
+import { incoming_call } from './wsevents/incoming_call.mjs';
+import { message_ciphertext } from './wsevents/message_ciphertext.mjs';
+import { message_revoke_everyone } from './wsevents/message_revoke_everyone.mjs';
+import { loading_screen } from './wsevents/loading_screen.mjs';
+import { contact_change } from './wsevents/contact_change.mjs';
+import { media_uploaded } from './wsevents/media_uploaded.mjs';
 
 dotenv.config();
 
@@ -47,7 +47,10 @@ export const StartDJSClient = async (logger, wabot, qrPromise) => {
 	}
 
 	wabot.on('media_uploaded', async (msg) => await media_uploaded(msg, client));
-	wabot.on('contact_changed', async (msg, oldId, newId, isContact) => await contact_change(msg, oldId, newId, isContact, client));
+	wabot.on(
+		'contact_changed',
+		async (msg, oldId, newId, isContact) => await contact_change(msg, oldId, newId, isContact, client)
+	);
 	wabot.on('change_battery', async (batteryInfo) => await change_battery(batteryInfo, client));
 	wabot.on('incoming_call', async (callData) => await call(callData, client));
 	wabot.on('message', async (msg) => await message(msg, client));

@@ -9,5 +9,5 @@ const client = await StartDJSClient(logger, ws.wabot, ws.qrPromise);
 
 const loggedIn = await client.login(process.env.TOKEN);
 if (!loggedIn) {
-  logger.error('Error logging in to Discord with the provided token.');
+	logger.error('Error logging in to Discord with the provided token.');
 }
